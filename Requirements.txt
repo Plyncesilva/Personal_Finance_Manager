@@ -1,0 +1,20 @@
+
+Personal Finance Manager - Requirements Description
+
+The Personal Finance Manager software should be simple and intuitive. At start, begin as a CLI program and later integrate with a GUI.
+
+The user should be firsly prompted with a layout to insert an expense, as it will be the most frequent action made and the program should be conveniently prepared to register expenses.
+
+Data saving and loading should be done automatically, as well as assuring security copies of the same information. At first, this can be done with local files, later with an external data base.
+
+The user should be able to ADD, EDIT or DELETE expenses.
+
+An expense contains a VALUE, TYPE, DATE and an optional DESCRIPTION. The DATE is assumed to be the one when the EXPENSE was first registered although it can be changed by the user.
+
+The user should be able to list all expenses in a friendly format.
+
+The user can optionally insert its total balance in the bank account, and the system will adjust accordingly, also showing its current total balance according to the registered expenses.
+
+If the system crashes or the user interrupts the program flow, no data already registered should be lost!
+
+Later, the program should be capable of incorporating other functionalities, such as STATISTICS and QUERIES etc...
