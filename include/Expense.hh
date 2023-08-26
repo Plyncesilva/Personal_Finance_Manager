@@ -7,14 +7,21 @@
 
 class Expense {
 
-    double value;
-    ExpenseType type;
-    Date date;
-    std::string description;
+    private:
+
+        static int GLOBAL_UUID;
+        int uuid;
+        double value;
+        ExpenseType type;
+        Date date;
+        std::string description;
+
+        friend class ExpenseDataBase;
 
     public:
         Expense (double value, ExpenseType type = ExpenseType(), std::string description = "", Date date = Date());
 
+        int get_uuid() const;
         double get_value() const;
         void set_value(double value);
         ExpenseType get_expense_type() const;
@@ -28,4 +35,5 @@ class Expense {
         bool operator!=(const Expense& other) const;
         bool operator==(const Expense& other) const;
         friend std::ostream& operator<<(std::ostream &strm, Expense &e);
+
 };

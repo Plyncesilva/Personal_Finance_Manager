@@ -15,6 +15,7 @@ class Date {
     public:
         Date();
         Date (time_t date);
+        Date (std::string ctime);
 
         std::string get_ascitime() const;
         std::string get_ctime() const;

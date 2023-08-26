@@ -1,10 +1,12 @@
 #include <Expense.hh>
 
-Expense::Expense(double value, ExpenseType type, std::string description, Date date) : value(value), type(type), description(description), date(date){
-    // TODO: default expense type not working
+int Expense::GLOBAL_UUID = 0;
 
+Expense::Expense(double value, ExpenseType type, std::string description, Date date) : value(value), type(type), description(description), date(date){
+    uuid = GLOBAL_UUID++;
 }
 
+int Expense::get_uuid() const {return uuid;}
 double Expense::get_value() const {return value;}
 void Expense::set_value(double value){value = value;}
 ExpenseType Expense::get_expense_type() const {return type;}

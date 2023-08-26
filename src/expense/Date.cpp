@@ -2,7 +2,11 @@
 
 Date::Date() : date(time(0)) {}
 
-Date::Date(time_t date) : date(date) {};
+Date::Date(time_t date) : date(date) {}
+
+Date::Date(std::string ctime) {
+    date = time(0); // TODO: convert string to time_t
+}
 
 time_t Date::get_date() const{
     return date;
