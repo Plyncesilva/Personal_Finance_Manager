@@ -1,5 +1,9 @@
 #include <ExpenseDataBase.hh>
 
+const std::string ExpenseDataBase::db_user = "admin"; // TODO this must be hidden somehow
+const std::string ExpenseDataBase::db_password = "admin123"; // TODO this must be hidden somehow
+const std::string ExpenseDataBase::db_url = "couchbase://localhost"; // TODO this must be hidden somehow
+
 void ExpenseDataBase::check(lcb_STATUS err, const char *msg) {
     if (err != LCB_SUCCESS) {
         std::cerr << "[ERROR] " << msg << ": " << lcb_strerror_short(err) << "\n";
@@ -84,6 +88,31 @@ void ExpenseDataBase::expense_from_json(const nlohmann::json& j, Expense &e){
     // TODO: object conversions
 }
 
+void ExpenseDataBase::set_log_level(couchbase::log_level level){
+    couchbase::transactions::set_transactions_log_level(level);
+}
+
+std::shared_ptr<couchbase::bucket> ExpenseDataBase::get_bucket(){
+    return cluster->bucket(db_bucket);
+}
+
+std::shared_ptr<couchbase::collection> ExpenseDataBase::get_default_collection(){
+    return get_bucket()->default_collection();
+}
+
+ExpenseDataBase::ExpenseDataBase (std::string bucket_name) : db_bucket(bucket_name) {
+    set_log_level(couchbase::log_level::DEBUG);
+    cluster = new couchbase::cluster(db_url, db_user, db_password);
+}
+
+ExpenseDataBase::ExpenseDataBase (){
+
+}
+
+ExpenseDataBase::~ExpenseDataBase(){
+    delete cluster;
+}
+
 void ExpenseDataBase::test () {
 
     // testing couchbase
@@ -117,7 +146,7 @@ void ExpenseDataBase::add_doc_test() {
 
     // #tag::config_trace[]
     // Set logging level to Trace
-    couchbase::transactions::set_transactions_log_level(couchbase::log_level::TRACE);
+    couchbase::transactions::set_transactions_log_level(couchbase::log_level::DEBUG);
     // #end::config_trace[]
 
     // #tag::init[]
@@ -319,6 +348,39 @@ void ExpenseDataBase::add_doc_test() {
     //     }
     //     //#end::threads[]
     // }
+}
 
+void ExpenseDataBase::add_expense(Expense e){
+    
+    couchbase::transactions::transactions transactions(*cluster, {});
+    
+    try {
+        transactions.run([&](couchbase::transactions::attempt_context& ctx) {
 
+            ctx.insert(get_default_collection(), std::to_string(e.uuid), e.to_json());
+            ctx.commit();
+
+        });
+    } catch (couchbase::transactions::transaction_failed& e) {
+        std::cerr << "Transaction did not reach commit point: " << e.what() << "\n";
+    }
+}
+
+void ExpenseDataBase::rm_expense(int uuid){
+
+    couchbase::transactions::transactions t(*cluster, {});
+
+    try {
+        t.run([&](couchbase::transactions::attempt_context& ctx) {
+    
+            auto doc = ctx.get_optional(get_default_collection(), std::to_string(uuid));
+    
+            if (doc){
+                ctx.remove(get_default_collection(), doc.value());
+                ctx.commit();
+            }
+        });
+    } catch (couchbase::transactions::transaction_failed& e) {
+        std::cerr << "Transaction did not reach commit point: " << e.what() << "\n";
+    }
 }

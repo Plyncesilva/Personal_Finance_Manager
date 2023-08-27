@@ -15,6 +15,13 @@ class ExpenseDataBase {
 
     private:
         
+        static const std::string db_user;
+        static const std::string db_password;
+        static const std::string db_url;
+        
+        std::string db_bucket;
+        couchbase::cluster *cluster;
+
         struct Rows {
             std::vector<std::string> rows{};
             std::string metadata{};
@@ -26,9 +33,18 @@ class ExpenseDataBase {
         static void expense_to_json(nlohmann::json& j, const Expense &e);
         static void expense_from_json(const nlohmann::json& j, Expense &e);
 
+        void set_log_level(couchbase::log_level level);
+        std::shared_ptr<couchbase::bucket> get_bucket();
+        std::shared_ptr<couchbase::collection> get_default_collection();
+
     public:
 
+        ExpenseDataBase (std::string bucket_name);
+        ExpenseDataBase ();
+        ~ExpenseDataBase();
         void test();
         void add_doc_test();
 
+        void add_expense(Expense e);
+        void rm_expense(int uuid);
 };

@@ -4,10 +4,17 @@
 #include <ExpenseType.hh>
 #include <Date.hh>
 #include <sstream>
+#include <couchbase/transactions.hxx>
 
 class Expense {
-
+    
     private:
+
+        static const std::string UUID;
+        static const std::string VALUE;
+        static const std::string TYPE;
+        static const std::string DESCRIPTION;
+        static const std::string DATE;
 
         static int GLOBAL_UUID;
         int uuid;
@@ -20,6 +27,7 @@ class Expense {
 
     public:
         Expense (double value, ExpenseType type = ExpenseType(), std::string description = "", Date date = Date());
+        Expense (nlohmann::json j);
 
         int get_uuid() const;
         double get_value() const;
@@ -31,6 +39,9 @@ class Expense {
         std::string get_description() const;
         void set_description(std::string description);    
         std::string to_string();
+
+        nlohmann::json to_json() const;
+        
 
         bool operator!=(const Expense& other) const;
         bool operator==(const Expense& other) const;

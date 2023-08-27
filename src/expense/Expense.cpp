@@ -1,9 +1,23 @@
 #include <Expense.hh>
 
+const std::string Expense::UUID = "uuid";
+const std::string Expense::VALUE = "value";
+const std::string Expense::TYPE = "type";
+const std::string Expense::DESCRIPTION = "description";
+const std::string Expense::DATE = "date";
+
 int Expense::GLOBAL_UUID = 0;
 
 Expense::Expense(double value, ExpenseType type, std::string description, Date date) : value(value), type(type), description(description), date(date){
     uuid = GLOBAL_UUID++;
+}
+
+Expense::Expense (nlohmann::json j){
+    j.at(UUID).get_to(uuid);
+    j.at(VALUE).get_to(value);
+    type = ExpenseType(j.at(TYPE));
+    j.at(DESCRIPTION).get_to(description);
+    date = Date(j.at(DATE));
 }
 
 int Expense::get_uuid() const {return uuid;}
@@ -17,11 +31,20 @@ std::string Expense::get_description() const {return description;}
 void Expense::set_description(std::string description){description = description;}
 
 std::string Expense::to_string(){
-    // TODO
     std::ostringstream oss;
     oss << *(this);
 
     return oss.str();
+}
+
+nlohmann::json Expense::to_json() const {
+    return nlohmann::json {
+        { UUID, uuid},
+        { VALUE, value },
+        { TYPE, type.to_json() },
+        { DESCRIPTION, description },
+        { DATE, date.to_json() },    
+    };
 }
 
 bool Expense::operator!=(const Expense& other) const{
