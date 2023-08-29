@@ -5,3 +5,8 @@
 # CODE
 
 - Generate and handle exceptions
+- Edit expenses, transactions replace 
+- Get an expense as document
+- Understand transactions configurations
+
+- List all expenses (use queries)

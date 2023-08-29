@@ -23,13 +23,15 @@ class Expense {
         Date date;
         std::string description;
 
-        friend class ExpenseDataBase;
 
     public:
         Expense (double value, ExpenseType type = ExpenseType(), std::string description = "", Date date = Date());
         Expense (nlohmann::json j);
 
+        friend class ExpenseManager;
+
         int get_uuid() const;
+        std::string get_uuid_str() const;
         double get_value() const;
         void set_value(double value);
         ExpenseType get_expense_type() const;

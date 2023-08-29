@@ -21,6 +21,7 @@ Expense::Expense (nlohmann::json j){
 }
 
 int Expense::get_uuid() const {return uuid;}
+std::string Expense::get_uuid_str() const {return std::to_string(uuid);}
 double Expense::get_value() const {return value;}
 void Expense::set_value(double value){value = value;}
 ExpenseType Expense::get_expense_type() const {return type;}

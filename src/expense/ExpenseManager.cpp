@@ -1,7 +1,11 @@
 #include <ExpenseManager.hh>
 
+ExpenseManager::ExpenseManager(){
+    Expense::GLOBAL_UUID = e_db.max_uuid() + 1;
+}
+
 void ExpenseManager::add_expense(Expense e){
-    all.add_expense(e);
+    e_db.add_expense(e);
 }
 
 ExpenseCollection ExpenseManager::get_expense_collection() const{
